@@ -1,13 +1,8 @@
 import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Req,
+  Body, ClassSerializerInterceptor, Controller, Delete,
+  Get, Param, Patch, Post, Req, UseInterceptors
 } from '@nestjs/common';
+import { instanceToPlain } from 'class-transformer';
 import { Request } from 'express';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
@@ -18,18 +13,22 @@ export class BooksController {
   constructor(private readonly booksService: BooksService) { }
 
   @Post()
-  create(@Body() createBookDto: CreateBookDto) {
-    return this.booksService.create(createBookDto);
+  async create(@Body() createBookDto: CreateBookDto) {
+    return await this.booksService.create(createBookDto);
   }
 
+  // TODO: Exclude @Exclude parameters from response.
   @Get()
-  findAll(@Req() req: Request) {
-    return this.booksService.findAll(req);
+  async findAll(@Req() req: Request) {
+    const books = await this.booksService.findAll(req);
+    return JSON.stringify(instanceToPlain({ books }));
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get(':slug')
-  findOne(@Param('slug') slug: string) {
-    return this.booksService.findOne(slug);
+  async findOne(@Param('slug') slug: string) {
+    const book = await this.booksService.findOne(slug);
+    return book;
   }
 
   @Patch(':slug')
