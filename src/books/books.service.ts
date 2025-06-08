@@ -23,7 +23,8 @@ export class BooksService {
     book.slug = createBookDto.title.toLowerCase().replaceAll(' ', '-');
     book.upvoted = false;
     book.upvotes = 0;
-    await this.booksRepository.save(book);
+    const { id } = await this.booksRepository.save(book);
+    return { id };
   }
 
   async findAll(@Req() req: Request) {

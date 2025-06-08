@@ -4,6 +4,7 @@ import {
 } from '@nestjs/common';
 import { instanceToPlain } from 'class-transformer';
 import { Request } from 'express';
+import { GetBookDto } from 'src/books/dto/get-book.dto';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
@@ -26,7 +27,7 @@ export class BooksController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':slug')
-  async findOne(@Param('slug') slug: string) {
+  async findOne(@Param() { slug }: GetBookDto) {
     const book = await this.booksService.findOne(slug);
     return book;
   }
