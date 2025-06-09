@@ -5,7 +5,6 @@ export default setSeederFactory(Book, (faker) => {
   const book = new Book();
 
   book.id = faker.string.uuid();
-  book.cover = faker.image.url();
   book.title = faker.music.songName();
   book.slug = faker.lorem.slug({ min: 1, max: 3 });
   book.author = `${faker.person.firstName()} ${faker.person.lastName()}`;
