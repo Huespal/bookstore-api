@@ -1,9 +1,9 @@
 import {
   Body, ClassSerializerInterceptor, Controller, Delete,
-  Get, Param, Patch, Post, Req, UseInterceptors
+  Get, Param, Patch, Post,
+  UseInterceptors
 } from '@nestjs/common';
 import { instanceToPlain } from 'class-transformer';
-import { Request } from 'express';
 import { GetBookDto } from 'src/books/dto/get-book.dto';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
@@ -18,10 +18,9 @@ export class BooksController {
     return await this.booksService.create(createBookDto);
   }
 
-  // TODO: Exclude @Exclude parameters from response.
   @Get()
-  async findAll(@Req() req: Request) {
-    const books = await this.booksService.findAll(req);
+  async findAll() {
+    const books = await this.booksService.findAll();
     return JSON.stringify(instanceToPlain({ books }));
   }
 

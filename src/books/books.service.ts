@@ -1,7 +1,7 @@
-import { Injectable, Req } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Request } from 'express';
 import { Book } from 'src/books/entities/book.entity';
+import { sanitizeStr } from 'src/helpers';
 import { Repository } from 'typeorm';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
@@ -16,28 +16,19 @@ export class BooksService {
   async create(createBookDto: CreateBookDto) {
     const book: Book = new Book();
     book.author = createBookDto.author;
-    book.cover = createBookDto.cover;
+    book.cover = sanitizeStr(createBookDto.cover);
     book.rating = createBookDto.rating;
     book.synopsis = createBookDto.synopsis;
     book.title = createBookDto.title;
-    book.slug = createBookDto.title.toLowerCase().replaceAll(' ', '-');
+    book.slug = sanitizeStr(createBookDto.title);
     book.upvoted = false;
     book.upvotes = 0;
     const { id } = await this.booksRepository.save(book);
     return { id };
   }
 
-  async findAll(@Req() req: Request) {
-    const url = `${req.protocol}://${req.get('Host')}`;
-
-    const dbBooks = await this.booksRepository.find();
-
-    return dbBooks.map(book => ({
-      ...book,
-      cover: book.cover.startsWith(url)
-        ? book.cover
-        : `${url}/images/${book.cover}`
-    }));
+  async findAll() {
+    return await this.booksRepository.find();
   }
 
   async findOne(slug: string) {
