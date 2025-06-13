@@ -36,13 +36,9 @@ export class BooksService {
   }
 
   async update(slug: string, updateBookDto: UpdateBookDto) {
-    const book: Book | null = await this.booksRepository.findOneBy({ slug });
+    const book = await this.booksRepository.findOneByOrFail({ slug });
 
-    if (!book) throw Error('404');
-
-    book.upvoted = updateBookDto.upvoted;
-    book.upvotes = updateBookDto.upvotes;
-    await this.booksRepository.save(book);
+    await this.booksRepository.save({ ...book, ...updateBookDto });
   }
 
   async remove(slug: string): Promise<void> {
