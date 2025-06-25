@@ -26,3 +26,5 @@ $ npm run test:e2e
 # Test coverage
 $ npm run test:cov
 ```
+
+Be sure to open a PostgresSQL Server before intializing the backend to successfully generate the database seeds.
